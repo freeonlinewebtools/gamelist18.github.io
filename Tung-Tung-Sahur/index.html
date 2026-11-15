@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <title>Tung Sahur Horror</title>
+  <!-- ubg: only our own hosts. The build otherwise calls AzGames (api.azgames.io, games.azgame.io) for promotions when not on localhost. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://freeonlinewebtools.github.io https://ubghyper.github.io data: blob: 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'">
   <style>
     html, body { background: #000; width: 100%; height: 100%; overflow: hidden; padding: 0; margin: 0; }
     #gameContainer { position: absolute; }
