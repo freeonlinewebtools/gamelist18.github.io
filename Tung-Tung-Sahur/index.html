@@ -11,7 +11,16 @@
 </head>
 <body>
 
-  <script>/* ubg: the GMSoft/AzGames ad SDK is not loaded. The build reads these options and, with ads off, resumes the game itself. */
+  <script>/* ubg: block AzGames promotion/API calls made from inside the build (seen off localhost: api.azgames.io, games.azgame.io) */
+(function () {
+  var bad = /^https?:\/\/([a-z0-9-]+\.)*(azgames?\.io|1games\.io)(\/|$)/i;
+  var open = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (m, u) { if (bad.test(String(u))) arguments[1] = "about:blank"; return open.apply(this, arguments); };
+  if (window.fetch) { var f = window.fetch; window.fetch = function (i) { var u = typeof i === "string" ? i : (i && i.url) || ""; if (bad.test(u)) return Promise.reject(new TypeError("ubg: blocked")); return f.apply(this, arguments); }; }
+  try { var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src"); Object.defineProperty(HTMLImageElement.prototype, "src", { configurable: true, get: function () { return d.get.call(this); }, set: function (v) { d.set.call(this, bad.test(String(v)) ? "data:," : v); } }); } catch (e) {}
+})();
+</script>
+<script>/* ubg: the GMSoft/AzGames ad SDK is not loaded. The build reads these options and, with ads off, resumes the game itself. */
 window.GMSOFT_OPTIONS = { enableAds: false, sdkType: "none", pub_id: "", unlockTimer: 60, timeShowInter: 60, enableMoreGame: false, enablePromotion: false, game: {}, domainHost: location.hostname };</script>
   <script id="gmsoft-jssdk" src="data:text/javascript,"></script><!-- ubg: empty stand-in; the build waits for this element's load event -->
 
@@ -60,8 +69,8 @@ window.GMSOFT_OPTIONS = { enableAds: false, sdkType: "none", pub_id: "", unlockT
       productVersion: "25051505",
       pubId: "",
       gameId: "tung-sahur-horror",
-      enableMoreGame: "yes",
-      enablePromotion: true,
+      enableMoreGame: "no", /* ubg: no AzGames cross-promotion */
+      enablePromotion: false,
       eventLog: false
     };
 
